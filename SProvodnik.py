@@ -27,11 +27,13 @@ def f_analyze():
     # b_1.pack()
     # b_2 = tk.Button(new_window, text="Удалить файл", command=remove_file)
     # b_2.pack()
-    inp = input("Введите О, если хотите открыть файл и введите У, если хотите удалить файл ")
+    inp = input("Введите О, если хотите открыть файл, введите У, если хотите удалить файл или введите П, если хотите переименовать файл ")
     if inp == "О":
         open_file()
-    else:
+    elif inp == "У":
         remove_file()
+    elif inp == "С":
+        rename_file()
 
 def d_analyze():
     # new_window = tk.Toplevel()
@@ -39,11 +41,13 @@ def d_analyze():
     # b_1.pack()
     # b_2 = tk.Button(new_window, text="Удалить папку", command=remove_file)
     # b_2.pack()
-    inp = input("Введите О, если хотите открыть папку и введите У, если хотите удалить папку ")
+    inp = input("Введите О, если хотите открыть папку, введите У, если хотите удалить папку, введите П, если хотите переименовать папку ")
     if inp == "О":
         open_dir()
-    else:
+    elif inp == "У":
         remove_file()
+    else:
+        rename_file()
 
 def open_dir():
     os.chdir(os.getcwd())
@@ -52,8 +56,11 @@ def open_file():
     os.chdir(os.getcwd())
     os.startfile(os.getcwd())
 
+def rename_file():
+    inp = os.getcwd().split("\\")[-1]
+    os.rename(inp, input("Введите новое имя файла/папки "))
+
 def remove_file():
-    """Функция не работает"""
     os.remove(os.getcwd())
     print("Вы успешно удалили папку / файл")
 
@@ -76,6 +83,8 @@ type_analyze(lis)
 
 while True:
     name_file = input("Введите название файла/папки, с которым хотите работать ")
+    if name_file not in os.listdir():
+        open(name_file, "w")
     if os.path.isfile(name_file):
         f_analyze()
         break
