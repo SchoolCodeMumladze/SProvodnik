@@ -171,7 +171,7 @@ container = tk.Frame(window)
 container.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
 canvas = tk.Canvas(container)
-scrollbar = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
+scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
 scroll_frame = tk.Frame(canvas)
 
 scroll_frame.bind(

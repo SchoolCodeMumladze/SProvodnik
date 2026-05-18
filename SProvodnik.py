@@ -1,35 +1,24 @@
 from shutil import copyfile
 import os
 import tkinter as tk
-from tkinter import ttk
 
-was = False
 selected_item = ""
 
 def type_analyze(lis):
     global was
     global name_file
-    for widget in window.winfo_children():
+    for widget in scroll_frame.winfo_children():
         widget.destroy()
-    if was:
-        h = tk.Label(window, text="Добро пожаловать в SПроводник",
-                    font=100,
-                    foreground="black",
-                    background="white",
-                    height=2)
-        h.pack()
-        # name_file = tk.Entry(window)
-        # name_file.pack()
-        # bttn = tk.Button(window, text="Подтвердить текст", command=get_entry)
-        # bttn.pack()
-    was = True
     for item in lis:
         if os.path.isfile(item):
-            btn = tk.Button(window, text=f"📄 Файл {item}", command=lambda i=item: f_analyze(i))
-            btn.pack(padx=10, pady=2)
+            btn = tk.Button(scroll_frame, text=f"📄 Файл {item}", command=lambda i=item: f_analyze(i))
+            btn.pack(fill=tk.BOTH, padx=10, pady=2)
         else:
-            btn = tk.Button(window, text=f"📁 Папка {item}", command=lambda i=item: d_analyze(i))
-            btn.pack(padx=10, pady=2)
+            btn = tk.Button(scroll_frame, text=f"📁 Папка {item}", command=lambda i=item: d_analyze(i))
+            btn.pack(fill=tk.BOTH, padx=10, pady=2)
+
+    scroll_frame.update_idletasks()
+    canvas.config(scrollregion=canvas.bbox("all"))
 
 def f_analyze(_):
     global selected_item
@@ -80,32 +69,22 @@ def get_entry():
     global name_file
     name_file = name_file.get()
 
+def on_mouse_wheel(event):
+    canvas.yview_scroll(int(-event.delta / 120), "units")
+
 window = tk.Tk()
-window.geometry('500x2000')
-t = tk.Label(window, text="Добро пожаловать в SПроводник",
-                font=100,
-                foreground="black",
-                background="white",
-                height=2)
-t.pack()
+window.geometry('1000x600')
+canvas = tk.Canvas(window)
+scroll_frame = tk.Frame(canvas)
+
+scroll_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
+canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+window.bind_all("<MouseWheel>", on_mouse_wheel)
 direction = os.getcwd()
 os.chdir(direction[2])
 direction = os.getcwd()
 lis = os.listdir()
 type_analyze(lis)
 window.mainloop()
-# while True:
-#     name_file = tk.Entry(window)
-#     name_file.pack()
-#     bttn = tk.Button(window, text="Подтвердить текст", command=get_entry)
-#     bttn.pack()
-#     window.mainloop()
-#     if name_file not in os.listdir():
-#         open(name_file, "w")
-#     if os.path.isfile(name_file):
-#         f_analyze()
-#         break
-#     else:
-#         os.chdir(name_file)
-#         d_analyze()
-#         type_analyze(os.listdir())
