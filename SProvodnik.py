@@ -72,12 +72,29 @@ def get_entry():
 def on_mouse_wheel(event):
     canvas.yview_scroll(int(-event.delta / 120), "units")
 
+
+def create_new_item():
+    name = name_entry.get()
+    if "." in name:
+        with open(name, "w") as f:
+            f.write("")
+    else:
+        os.mkdir(name)
+    type_analyze(os.listdir())
+
 window = tk.Tk()
 window.geometry('1000x600')
+top_frame = tk.Frame(window)
+top_frame.pack(fill=tk.X, padx=10, pady=5)
+
+tk.Label(top_frame, text="Имя нового файла/папки:").pack(side=tk.LEFT)
+name_entry = tk.Entry(top_frame)
+name_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
+tk.Button(top_frame, text="Создать", command=create_new_item).pack(side=tk.LEFT)
 canvas = tk.Canvas(window)
 scroll_frame = tk.Frame(canvas)
 
-scroll_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+scroll_frame.bind("<Configure>", lambda x: canvas.configure(scrollregion=canvas.bbox("all")))
 canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
 canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
