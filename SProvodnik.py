@@ -5,10 +5,9 @@ import tkinter as tk
 selected_item = ""
 
 def type_analyze(lis):
-    global was
-    global name_file
     for widget in scroll_frame.winfo_children():
         widget.destroy()
+    direct = tk.Label(scroll_frame, text=os.getcwd()).pack()
     for item in lis:
         if os.path.isfile(item):
             btn = tk.Button(scroll_frame, text=f"📄 Файл {item}", command=lambda i=item: f_analyze(i))
@@ -31,6 +30,7 @@ def f_analyze(_):
     b_3 = tk.Button(new_window, text="Переименовать файл", command=rename_file)
     b_3.pack()
     new_window.mainloop()
+    new_window.destroy()
 
 def d_analyze(_):
     global selected_item
@@ -43,6 +43,7 @@ def d_analyze(_):
     b_3 = tk.Button(new_window, text="Переименовать папку", command=rename_file)
     b_3.pack()
     new_window.mainloop()
+    new_window.destroy()
 
 def open_dir():
     global selected_item
@@ -64,10 +65,6 @@ def remove_file():
     os.remove(inp)
     t = tk.Label(text="Вы успешно удалили файл/папку!")
     t.pack()
-
-def get_entry():
-    global name_file
-    name_file = name_file.get()
 
 def on_mouse_wheel(event):
     canvas.yview_scroll(int(-event.delta / 120), "units")
