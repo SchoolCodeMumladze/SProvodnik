@@ -3,6 +3,7 @@ import os
 import tkinter as tk
 
 selected_item = ""
+new_name = ""
 
 def type_analyze(lis):
     for widget in scroll_frame.winfo_children():
@@ -55,10 +56,16 @@ def open_file():
     os.startfile(selected_item)
 
 def rename_file():
+    global new_name
     inp = os.getcwd().split("\\")[-1]
     new_name = tk.Entry(window)
     new_name.pack()
+    btn_rename = tk.Button(scroll_frame, text="Подтвердить ввод", command=get_entry).pack()
     os.rename(inp, new_name)
+
+def get_entry():
+    global new_name
+    new_name = new_name.get()
 
 def remove_file():
     inp = os.getcwd().split("\\")[-1]
