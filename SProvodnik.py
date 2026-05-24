@@ -4,10 +4,30 @@ import tkinter as tk
 
 selected_item = ""
 new_name = ""
+was = False
+search_list = []
+searching_bool = False
+
+def back():
+    global was
+    dir = os.getcwd().split("\\")
+    dir = dir[:-1]
+    if len(dir) == 1:
+        new_dir = dir[0] + "\\"
+        was = False
+    else:
+        new_dir = "\\".join(dir)
+    os.chdir(new_dir)
+    type_analyze(os.listdir())
 
 def type_analyze(lis):
+    global was
+    global searching_bool
+    searching_bool = False
     for widget in scroll_frame.winfo_children():
         widget.destroy()
+    if was:
+        back_btn = tk.Button(scroll_frame, text="Назад", command=back).pack(side=tk.RIGHT)
     direct = tk.Label(scroll_frame, text=os.getcwd()).pack()
     for item in lis:
         if os.path.isfile(item):
@@ -16,13 +36,18 @@ def type_analyze(lis):
         else:
             btn = tk.Button(scroll_frame, text=f"📁 Папка {item}", command=lambda i=item: d_analyze(i))
             btn.pack(fill=tk.BOTH, padx=10, pady=2)
-
+    was = True
     scroll_frame.update_idletasks()
     canvas.config(scrollregion=canvas.bbox("all"))
 
 def f_analyze(_):
     global selected_item
-    selected_item = _
+    global searching_bool
+    if searching_bool:
+        os.chdir(_[0])
+        selected_item = _[1]
+    else:
+        selected_item = _
     new_window = tk.Toplevel()
     b_1 = tk.Button(new_window, text="Открыть файл", command=open_file)
     b_1.pack()
@@ -31,11 +56,15 @@ def f_analyze(_):
     b_3 = tk.Button(new_window, text="Переименовать файл", command=rename_file)
     b_3.pack()
     new_window.mainloop()
-    new_window.destroy()
 
 def d_analyze(_):
     global selected_item
-    selected_item = _
+    global searching_bool
+    if searching_bool:
+        os.chdir(_[0])
+        selected_item = _
+    else:
+        selected_item = _
     new_window = tk.Toplevel()
     b_1 = tk.Button(new_window, text="Открыть папку", command=open_dir)
     b_1.pack()
@@ -86,6 +115,42 @@ def create_new_item():
         os.mkdir(name)
     type_analyze(os.listdir())
 
+def searching():
+    global search_list
+    global searching_bool
+    searching_bool = True
+    directory_path = os.getcwd()
+    dir = None
+    el = None
+    for root, dirs, files in os.walk(directory_path):
+        dir = os.path.abspath(root)
+        for directory in dirs:
+            el = directory
+        for file in files:
+            el = file
+        search_list.append((dir, el))
+    searching_2()
+
+def searching_2():
+    global search_list
+    new_window = tk.Toplevel()
+    canvas_new = tk.Canvas(new_window)
+    scroll_frame_new = tk.Frame(canvas_new)
+    scroll_frame_new.bind("<Configure>", lambda x: canvas_new.configure(scrollregion=canvas.bbox("all")))
+    canvas_new.create_window((0, 0), window=scroll_frame, anchor="nw")
+    canvas_new.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    new_window.bind_all("<MouseWheel>", on_mouse_wheel)
+    for item in search_list:
+        if os.path.isfile(item[1]):
+            btn = tk.Button(scroll_frame_new, text=f"📄 Файл {item[1]}", command=lambda i=item: f_analyze(i))
+            btn.pack(fill=tk.BOTH, padx=10, pady=2)
+        else:
+            btn = tk.Button(scroll_frame_new, text=f"📁 Папка {item[1]}", command=lambda i=item: d_analyze(i))
+            btn.pack(fill=tk.BOTH, padx=10, pady=2)
+    scroll_frame_new.update_idletasks()
+    canvas_new.config(scrollregion=canvas.bbox("all"))
+    new_window.mainloop()
+
 window = tk.Tk()
 window.geometry('1000x600')
 top_frame = tk.Frame(window)
@@ -103,6 +168,7 @@ canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
 canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 window.bind_all("<MouseWheel>", on_mouse_wheel)
+search_button = tk.Button(top_frame, text="Перейти к поиску", command=searching).pack()
 direction = os.getcwd()
 os.chdir(direction[2])
 direction = os.getcwd()
