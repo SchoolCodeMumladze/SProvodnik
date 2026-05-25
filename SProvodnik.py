@@ -49,6 +49,7 @@ def f_analyze(_):
     else:
         selected_item = _
     new_window = tk.Toplevel()
+    new_window.title("SПроводник - дополнительное окно")
     b_1 = tk.Button(new_window, text="Открыть файл", command=open_file, bg="#679bab")
     b_1.pack()
     b_2 = tk.Button(new_window, text="Удалить файл", command=remove_file, bg="#ff8859")
@@ -66,6 +67,7 @@ def d_analyze(_):
     else:
         selected_item = _
     new_window = tk.Toplevel()
+    new_window.title("SПроводник - дополнительное окно")
     b_1 = tk.Button(new_window, text="Открыть папку", command=open_dir, bg="#679bab")
     b_1.pack()
     b_2 = tk.Button(new_window, text="Удалить папку", command=remove_file, bg="#ff8859")
@@ -90,6 +92,7 @@ def rename_file():
     global entry_widget, rename_window
     rename_window = tk.Toplevel()
     rename_window.geometry("300x100")
+    rename_window.title("SПроводник - окно переименования")
     tk.Label(rename_window, text=f"Новое имя для: {selected_item}").pack(pady=5)
     entry_widget = tk.Entry(rename_window, width=30)
     entry_widget.insert(0, selected_item)
@@ -110,19 +113,13 @@ def confirm_rename():
     except Exception as e:
         tk.Label(rename_window, text="Ошибка", fg="red").pack()
 
-def get_entry():
-    global new_name
-    new_name = new_name.get()
-
 def remove_file():
-    inp = os.getcwd().split("\\")[-1]
-    os.remove(inp)
+    os.remove(selected_item)
     t = tk.Label(text="Вы успешно удалили файл/папку!")
     t.pack()
 
 def on_mouse_wheel(event):
     canvas.yview_scroll(int(-event.delta / 120), "units")
-
 
 def create_new_item():
     name = name_entry.get()
@@ -181,6 +178,7 @@ def searching_2():
 
 window = tk.Tk()
 window.geometry('1000x600')
+window.title("SПроводник - основное окно")
 top_frame = tk.Frame(window)
 top_frame.pack(fill=tk.X, padx=10, pady=5)
 
