@@ -27,8 +27,8 @@ def type_analyze(lis):
     for widget in scroll_frame.winfo_children():
         widget.destroy()
     if was:
-        back_btn = tk.Button(scroll_frame, text="Назад", command=back, bg="#d1cfd1").pack(side=tk.RIGHT)
-    direct = tk.Label(scroll_frame, text=os.getcwd()).pack()
+        back_btn = tk.Button(scroll_frame, text="Назад", command=back, bg="#FFFFFF").pack(side=tk.RIGHT)
+    direct = tk.Label(scroll_frame, text=os.getcwd(), fg="blue").pack()
     for item in lis:
         if os.path.isfile(item):
             btn = tk.Button(scroll_frame, text=f"📄 Файл {item}", command=lambda i=item: f_analyze(i), bg="#9c9c9c")
@@ -86,7 +86,6 @@ def open_dir():
 def open_file():
     global selected_item
     os.startfile(selected_item)
-
 
 def rename_file():
     global entry_widget, rename_window
@@ -175,6 +174,7 @@ def searching_2():
             btn.pack(fill=tk.BOTH, padx=10, pady=2)
     scroll_frame.update_idletasks()
     canvas.config(scrollregion=canvas.bbox("all"))
+    back_btn = tk.Button(scroll_frame, text="Назад", command=back, bg="#FFFFFF").pack(side=tk.RIGHT)
 
 window = tk.Tk()
 window.geometry('1000x600')
